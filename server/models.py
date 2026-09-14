@@ -1,11 +1,12 @@
-from datetime import datetime, timezone
-import uuid
 from typing import Optional
-from sqlalchemy import table
-from sqlmodel import SQLModel, Field
+import uuid
+from datetime import datetime, timezone
+
+from sqlmodel import Field, SQLModel
+
 
 class Room(SQLModel, table=True):
-    __tablename__ = "rooms"
+    __tablename__: str = "rooms"
 
     # ใช้ default_factory เพื่อให้ Python สร้าง UUID4 ทันทีเมื่อมีการสร้าง Instance
     id: Optional[uuid.UUID] = Field(
