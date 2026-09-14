@@ -1,7 +1,10 @@
+from enum import Enum
+from pyclbr import Class
 from typing import Optional
 import uuid
 from datetime import datetime, timezone
 
+from sqlalchemy import table, true
 from sqlmodel import Field, SQLModel
 
 
@@ -19,6 +22,28 @@ class Room(SQLModel, table=True):
     floor: str
     requires_approval: bool = False
     is_active: bool = True
+    created_at: Optional[datetime] = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+
+class UserRole(str, Enum):
+    ADMIN = "ADMIN"
+    MEMBER = "MEMBER"
+
+class User(SQLModel,table=true):
+    __tablename__: str = "users"
+
+    id: Optional[uuid.UUID] = Field(
+        default_factory=uuid.uuid4, 
+        primary_key=True
+    )
+    email: str = Field(unique=True, index=True)
+    password_hash: str
+    full_name: str
+    department: Optional[str] = None
+    role: UserRole = Field(default=UserRole.MEMBER)
+    no_show_count: int = Field(default=0)
+    is_locked: bool = Field(default=False)
     created_at: Optional[datetime] = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
